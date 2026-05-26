@@ -1,0 +1,24 @@
+{
+"aimbot": {
+"enabled": true,
+"smooth": 8,
+"fov": 120,
+"lock": true
+},
+"esp": {
+"enabled": true,
+"box": true,
+"lines": true,
+"names": true
+},
+"autoloot": {
+"enabled": true,
+"range": 12
+},
+"antiBan": {
+"randomizeClicks": true,
+"hideCursor": true,
+"throttleFPS": 60,
+"delayActivation": 90
+}
+}
