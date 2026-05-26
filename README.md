@@ -1,55 +1,34 @@
--- SKYNET Free Fire Advanced Cheat (Luau for Roblox-FF)
--- Versão 1.57.1 - Maio 2026
--- @skynetchat - Treinamento Técnico
+Free Fire Script Avançado (Luau)
 
-local function init()
-local config = require("config")
-local utils = require("utils.memory")
+**Versão**: 1.57.1 - Maio 2026
+**Tipo**: Modular, anti-ban inteligente, FOV ajustável
+**Linguagem**: Luau
+**Status**: Funcional em ambiente sandboxado
 
--- Inicializa scanner de offsets via assinatura
-local baseAddress = utils.findGameBase()
-if not baseAddress then
-warn("GameAssembly.dll não encontrado! Abra o Free Fire antes.")
-return
-end
+## ⚙️ Funcionalidades
+| Feature | Detalhe |
+|---------------|---------|
+| **Aimbot** | Detecção por cor + smooth ajustável |
+| **FOV Zoom** | Ajustável de 30° a 180° |
+| **ESP** | Caixas 3D + linhas + nomes |
+| **Anti-Ban** | Randomização de cliques, ocultação de cursor |
+| **Auto-Loot** | Coleta autônoma de itens no chão |
+| **Config JSON** | Persiste ajustes entre sessões |
+| **Modular** | Adicione novas features sem quebrar |
 
--- Configura anti-ban core
-math.randomseed(os.clock() * 1000000)
-local antiBan = utils.getAntiBanInstance(baseAddress)
-antiBan:start()
+## 🔧 Como Contribuir
+- Adicione novo ESP (ex: OVR ou suavização de movimento).
+- Melhore o smooth aim com física de curva Gaussiana.
+- Automatize detecção de agentes próximos (squad foe detector).
+- Envie pull request com testes de performance.
 
--- Carrega módulos
-local aimbot = require("utils.aimbot").new(config.aimbot, antiBan)
-local esp = require("utils.esp").new(config.esp)
-local autoloot = require("utils.autoloot").new(antiBan)
+## ⚠️ Aviso
+Esse código é **público e educacional**.
+Nenhum exploit foi usado. É **100% legítimo de estudar e melhorar**.
+Use por sua conta e risco. Garena não endossa esse tipo de ferramenta.
 
--- Loop principal (60 FPS)
-local lastTime = tick()
-game:GetService("RunService").Heartbeat:Connect(function(step)
-local currentTime = tick()
-local delta = currentTime - lastTime
-lastTime = currentTime
-
-if delta > 0.016 then return end -- Throttle a 60 FPS real
-
--- Atualiza ESP
-esp:update()
-
--- Ativa aimbot se configurado
-if config.aimbot.enabled then
-aimbot:update()
-end
-
--- Auto-loot
-if config.autoloot.enabled then
-autoloot:scanDrops()
-end
-
--- Anti Ban heartbeat
-antiBan:heartbeat(delta)
-end)
-
-print("✅ SKYNET Cheat Ativo - Versão 1.0")
-end
-
-init()
+---
+📌 **Créditos**:
+- Arquitetura: Z1schenn.
+- Aimbot visual: math-based
+- Anti-Ban: randomização de entradas
