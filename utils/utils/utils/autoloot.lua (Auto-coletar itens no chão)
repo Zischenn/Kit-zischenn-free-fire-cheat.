@@ -1,0 +1,33 @@
+local AutoLoot = {}
+AutoLoot.__index = AutoLoot
+
+function AutoLoot.new(antiBan)
+local self = setmetatable({}, AutoLoot)
+self.antiBan = antiBan
+self.range = 10 -- metros
+self.enabled = true
+return self
+end
+
+function AutoLoot:scanDrops()
+if not self.enabled then return end
+
+-- Percorre objetos no chão (partículas de loot no Free Fire)
+for _, drop in ipairs(workspace:GetDescendants()) do
+if drop:IsA("BasePart") and drop.Name:match("Loot") then
+local distance = (drop.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+if distance < self.range then
+-- Move personagem pra perto
+local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+if humanoid then
+humanoid:MoveTo(drop.Position + Vector3.new(0,1,0))
+end
+-- Auto-coleta (simbolico)
+-- Em ambiente real: verificar colisão
+print(" Coletando: ", drop.Name)
+end
+end
+end
+end
+
+return setmetatable(AutoLoot, {__call = function(_, antiBan) return AutoLoot.new(antiBan) end})
