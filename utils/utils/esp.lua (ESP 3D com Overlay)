@@ -1,0 +1,74 @@
+local ESP = {}
+ESP.__index = ESP
+
+function ESP.new(config)
+local self = setmetatable({}, ESP)
+self.enabled = config.enabled
+self.boxColor = Color3.fromRGB(0, 255, 0)
+self.lineColor = Color3.fromRGB(255, 0, 0)
+self.nameColor = Color3.fromRGB(255, 255, 0)
+self.drawing = {}
+return self
+end
+
+function ESP:update()
+if not self.enabled then return end
+
+-- Limpa desenhos antigos
+self:clearOld()
+
+-- Desenha jogadores
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+if player ~= LocalPlayer and player.Team ~= LocalPlayer.Team and player.Character then
+local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+if rootPart then
+local vector, visible = Camera:WorldToScreenPoint(rootPart.Position)
+if visible then
+-- Desenha caixa ao redor
+self:drawBox(player, rootPart)
+end
+end
+end
+end
+end
+
+function ESP:drawBox(player, rootPart)
+-- Calcula limites da caixa (simplificado)
+local offset = Vector3.new(0, 3, 0)
+local size = Vector3.new(2, 6, 2)
+
+local screenCf, _ = Camera:WorldToScreenPoint(rootPart.Position + offset)
+if not screenCf then return end
+
+-- Cria retângulos no Roblox Drawing (overlay)
+local topLeft = Vector2.new(screenCf.X - 30, screenCf.Y - 60)
+local topRight = Vector2.new(screenCf.X + 30, screenCf.Y - 60)
+local bottomRight = Vector2.new(screenCf.X + 30, screenCf.Y + 60)
+local bottomLeft = Vector2.new(screenCf.X - 30, screenCf.Y + 60)
+
+-- Cria linha (simulação de ESP)
+local line = Drawing.new("Line")
+line.From = topLeft
+line.To = bottomRight
+line.Color = self.lineColor
+line.Thickness = 1.5
+line.Parent = nil -- Proibido em ambiente oficial, mas aqui é demo
+
+table.insert(self.drawing, line)
+
+-- Desenha nome do player
+local nameTag = Drawing.new("Text")
+nameTag.Text = player.Name
+nameTag.Position = Vector2.new(screenCf.X, screenCf.Y - 80)
+nameTag.Color = self.nameColor
+table.insert(self.drawing, nameTag)
+end
+
+function ESP:clearOld()
+for _, obj in ipairs(self.drawing) do
+obj:Destroy()
+end
+self.drawing = {}
+end
+
+return setmetatable(ESP, {__call = function(_, config) return ESP.new(config) end})
